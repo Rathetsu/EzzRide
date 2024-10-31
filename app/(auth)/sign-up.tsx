@@ -19,6 +19,7 @@ const SignUp = () => {
 		email: "",
 		password: "",
 	});
+
 	const [verification, setVerification] = useState({
 		state: "default",
 		error: "",
@@ -29,7 +30,7 @@ const SignUp = () => {
 		if (!isLoaded) return;
 		try {
 			await signUp.create({
-				emailAddress: form.email,
+				emailAddress: form.email.toLowerCase(),
 				password: form.password,
 			});
 			await signUp.prepareEmailAddressVerification({
@@ -44,6 +45,7 @@ const SignUp = () => {
 			Alert.alert("Error", err.errors[0].longMessage);
 		}
 	};
+
 	const onPressVerify = async () => {
 		if (!isLoaded) return;
 		try {
@@ -57,8 +59,9 @@ const SignUp = () => {
 					method: "POST",
 					body: JSON.stringify({
 						name: form.name,
-						email: form.email,
+						email: form.email.toLowerCase(),
 						clerkId: completeSignUp.createdUserId,
+						password: form.password,
 					}),
 				});
 				await setActive({ session: completeSignUp.createdSessionId });
@@ -81,6 +84,7 @@ const SignUp = () => {
 			});
 		}
 	};
+
 	return (
 		<ScrollView className="flex-1 bg-white">
 			<View className="flex-1 bg-white">
@@ -109,6 +113,7 @@ const SignUp = () => {
 						icon={icons.email}
 						textContentType="emailAddress"
 						value={form.email}
+						lowercase={true}
 						onChangeText={(value) =>
 							setForm({ ...form, email: value })
 						}
@@ -154,7 +159,8 @@ const SignUp = () => {
 							Verification
 						</Text>
 						<Text className="font-Jakarta mb-5">
-							We've sent a verification code to {form.email}.
+							We've sent a verification code to{" "}
+							{form.email.toLowerCase()}.
 						</Text>
 						<InputField
 							label={"Code"}
@@ -191,8 +197,11 @@ const SignUp = () => {
 							You have successfully verified your account.
 						</Text>
 						<CustomButton
-							title="Browse Home"
-							onPress={() => router.push(`/(root)/(tabs)/home`)}
+							title="Continue"
+							onPress={() => {
+								setShowSuccessModal(false);
+								router.push(`/(root)/(tabs)/home`);
+							}}
 							className="mt-5"
 						/>
 					</View>

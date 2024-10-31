@@ -20,6 +20,7 @@ const InputField = ({
 	inputStyle,
 	iconStyle,
 	className,
+	lowercase = false,
 	...props
 }: InputFieldProps) => {
 	return (
@@ -45,6 +46,7 @@ const InputField = ({
 						<TextInput
 							className={`rounded-full p-4 font-JakartaSemiBold text-[15px] flex-1 ${inputStyle} text-left`}
 							secureTextEntry={secureTextEntry}
+							autoCapitalize={lowercase ? "none" : "sentences"}
 							{...props}
 						/>
 					</View>
