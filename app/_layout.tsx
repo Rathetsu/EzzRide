@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { LogBox } from "react-native";
+import "../global.css";
 
 import { tokenCache } from "@/lib/auth";
 
