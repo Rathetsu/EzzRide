@@ -14,15 +14,18 @@ export async function POST(request: Request) {
 
 		password = await bcrypt.hash(password, 10);
 
-		const response = await sql`
-		INSERT INTO users (name, email, clerk_id, password)
+		const query = `INSERT INTO users (name, email, clerk_id, password)
 		VALUES (${name}, ${email}, ${clerkId}, ${password})`;
+		const response = await sql`${query}`;
 
-		return new Response(JSON.stringify(response), {
+		return new Response(JSON.stringify({ data: response }), {
 			status: 200,
 		});
 	} catch (e) {
-		console.log(e);
-		return Response.json({ error: e }, { status: 500 });
+		console.log("Erorr creating user: ", e);
+		return Response.json(
+			{ error: "Internal Server Error" },
+			{ status: 500 }
+		);
 	}
 }
