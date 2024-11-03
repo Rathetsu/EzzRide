@@ -57,6 +57,7 @@ const SignIn = () => {
 						placeholder="Enter email"
 						icon={icons.email}
 						textContentType="emailAddress"
+						lowercase={true}
 						value={form.email}
 						onChangeText={(value) =>
 							setForm({ ...form, email: value })
