@@ -44,7 +44,7 @@ const FindRide = () => {
 
 			<CustomButton
 				title="Find a Ride Now!"
-				onPress={() => router.push("/(root)/confirm-ride/")}
+				onPress={() => router.push("/(root)/confirm-ride")}
 				className="mt-5"
 			/>
 		</RideLayout>
