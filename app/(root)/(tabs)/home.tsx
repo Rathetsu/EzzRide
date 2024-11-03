@@ -11,13 +11,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import GoogleTextInput from "@/components/GoogleTextInput";
+import Map from "@/components/Map";
 import RideCard from "@/components/RideCard";
 import { icons, images } from "@/constants";
-import { useLoationStore } from "@/store";
+import { useLocationStore } from "@/store";
 
 
 const Home = () => {
-	const { setUserLocation, setDestinationLocation } = useLoationStore();
+	const { setUserLocation, setDestinationLocation } = useLocationStore();
 	const { user } = useUser();
 	const loading = false;
 
@@ -100,7 +102,24 @@ const Home = () => {
 							</TouchableOpacity>
 						</View>
 
-						{/* Google text input */}
+						<GoogleTextInput
+							icon={icons.search}
+							containerStyle="bg-white shadow-md shadow-neutral-300"
+							handlePress={handleDesitinationPress}
+						/>
+
+						<>
+							<Text className="text-xl font-JakartaBold mt-5 mb-3">
+								Your current location
+							</Text>
+							<View className="flex flex-row items-center bg-transparent h-[300px]">
+								<Map />
+							</View>
+						</>
+
+						<Text className="text-xl font-JakartaBold mt-5 mb-3">
+							Recent rides
+						</Text>
 					</>
 				)}
 			/>
