@@ -1,5 +1,6 @@
 import { useUser } from "@clerk/clerk-expo";
 import * as Location from "expo-location";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
@@ -27,7 +28,14 @@ const Home = () => {
 
 	const handleSignout = async () => {};
 
-	const handleDesitinationPress = () => {};
+	const handleDesitinationPress = (location: {
+		latitude: number;
+		longitude: number;
+		address: string;
+	}) => {
+		setDestinationLocation(location);
+		router.push("/(root)/find-ride");
+	};
 
 	useEffect(() => {
 		const requestLocationPermission = async () => {
