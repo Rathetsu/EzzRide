@@ -1,5 +1,9 @@
 import { useUser } from "@clerk/clerk-expo";
+import { StripeProvider } from "@stripe/stripe-react-native";
+import { Image, Text, View } from "react-native";
 
+import Payment from "@/components/Payment";
+import RideLayout from "@/components/RideLayout";
 import { icons } from "@/constants";
 import { formatTime } from "@/lib/utils";
 import { useDriverStore, useLocationStore } from "@/store";
@@ -17,6 +21,11 @@ const BookRide = () => {
 	)[0];
 
 	return (
+		<StripeProvider
+			publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
+			merchantIdentifier="ezzat.com.ezzride"
+			urlScheme="ezzride"
+		>
 			<RideLayout title="Book Ride">
 				<>
 					<Text className="text-xl font-JakartaSemiBold mb-3">
@@ -91,8 +100,18 @@ const BookRide = () => {
 							</Text>
 						</View>
 					</View>
+
+					<Payment
+						fullName={user?.fullName!}
+						email={user?.emailAddresses[0].emailAddress!}
+						amount={driverDetails?.price!}
+						driverId={driverDetails?.id}
+						rideTime={driverDetails?.time!}
+					/>
 				</>
 			</RideLayout>
+		</StripeProvider>
+	);
 };
 
 export default BookRide;

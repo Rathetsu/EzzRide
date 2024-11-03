@@ -90,6 +90,13 @@ declare interface InputFieldProps extends TextInputProps {
 	lowercase?: boolean;
 }
 
+declare interface PaymentProps {
+	fullName: string;
+	email: string;
+	amount: string;
+	driverId: number;
+	rideTime: number;
+}
 
 declare interface LocationStore {
 	userLatitude: number | null;
