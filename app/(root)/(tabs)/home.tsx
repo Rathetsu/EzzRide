@@ -167,7 +167,7 @@ const Home = () => {
 		};
 
 		requestLocationPermission();
-	}, []);
+	}, [setUserLocation]);
 
 	return (
 		<SafeAreaView className="bg-general-500">
