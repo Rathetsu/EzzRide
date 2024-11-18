@@ -131,10 +131,11 @@ const Home = () => {
 	const loading = false;
 
 	const [hasLocationPermission, setHasLocationPermission] = useState(false);
+	const [loadingLocation, setLoadingLocation] = useState(true);
 
 	const handleSignout = async () => {};
 
-	const handleDesitinationPress = (location: {
+	const handleDestinationPress = (location: {
 		latitude: number;
 		longitude: number;
 		address: string;
@@ -145,25 +146,41 @@ const Home = () => {
 
 	useEffect(() => {
 		const requestLocationPermission = async () => {
-			let { status } = await Location.requestForegroundPermissionsAsync();
+			try {
+				const { status } =
+					await Location.requestForegroundPermissionsAsync();
 
-			if (status !== "granted") {
-				setHasLocationPermission(false);
-				return;
+				if (status !== "granted") {
+					setHasLocationPermission(false);
+					setLoadingLocation(false);
+					return;
+				}
+
+				setHasLocationPermission(true);
+
+				const location = await Location.getCurrentPositionAsync();
+
+				const address = await Location.reverseGeocodeAsync({
+					latitude: location.coords.latitude,
+					longitude: location.coords.longitude,
+				});
+
+				console.log("latitude", location.coords.latitude);
+				console.log("longitude", location.coords.longitude);
+
+				setUserLocation({
+					latitude: location.coords.latitude,
+					longitude: location.coords.longitude,
+					address:
+						address?.[0]?.name && address?.[0]?.region
+							? `${address[0].name}, ${address[0].region}`
+							: "Unknown location",
+				});
+			} catch (error) {
+				console.error("Error fetching location:", error);
+			} finally {
+				setLoadingLocation(false);
 			}
-
-			let location = await Location.getCurrentPositionAsync();
-
-			const address = await Location.reverseGeocodeAsync({
-				latitude: location.coords?.latitude!,
-				longitude: location.coords?.longitude!,
-			});
-
-			setUserLocation({
-				latitude: location.coords?.latitude!,
-				longitude: location.coords?.longitude!,
-				address: `${address[0].name}, ${address[0].region}`,
-			});
 		};
 
 		requestLocationPermission();
@@ -203,7 +220,7 @@ const Home = () => {
 							<Text className="text-xl font-JakartaExtraBold">
 								Welcome{", "}
 								{user?.firstName ||
-									user?.emailAddresses[0].emailAddress.split(
+									user?.emailAddresses[0]?.emailAddress.split(
 										"@"
 									)[0]}
 								! 👋
@@ -219,7 +236,7 @@ const Home = () => {
 						<GoogleTextInput
 							icon={icons.search}
 							containerStyle="bg-white shadow-md shadow-neutral-300"
-							handlePress={handleDesitinationPress}
+							handlePress={handleDestinationPress}
 						/>
 
 						<>
@@ -227,7 +244,27 @@ const Home = () => {
 								Your current location
 							</Text>
 							<View className="flex flex-row items-center bg-transparent h-[300px]">
-								<Map />
+								{loadingLocation ? (
+									<ActivityIndicator
+										size="large"
+										color="#000"
+									/>
+								) : hasLocationPermission ? (
+									<Map />
+								) : (
+									<View className="flex flex-col items-center justify-center h-full w-full bg-red-100 rounded-md">
+										<Image
+											source={icons.xpin}
+											className="w-10 h-10 mb-3"
+											alt="Location Permission Denied"
+										/>
+										<Text className="text-lg font-JakartaMedium text-black text-center px-4">
+											Location access is denied. Please
+											enable it in your settings so we can
+											find your location.
+										</Text>
+									</View>
+								)}
 							</View>
 						</>
 

@@ -2,6 +2,27 @@ import { Driver, MarkerData } from "@/types/type";
 
 const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
+export const generateMarkersFromData = ({
+	data,
+	userLatitude,
+	userLongitude,
+}: {
+	data: Driver[];
+	userLatitude: number;
+	userLongitude: number;
+}): MarkerData[] => {
+	return data.map((driver) => {
+		const latOffset = (Math.random() - 0.5) * 0.01; // Random offset between -0.005 and 0.005
+		const lngOffset = (Math.random() - 0.5) * 0.01; // Random offset between -0.005 and 0.005
+
+		return {
+			latitude: userLatitude + latOffset,
+			longitude: userLongitude + lngOffset,
+			title: `${driver.first_name} ${driver.last_name}`,
+			...driver,
+		};
+	});
+};
 
 export const calculateRegion = ({
 	userLatitude,
@@ -16,9 +37,10 @@ export const calculateRegion = ({
 }) => {
 	if (!userLatitude || !userLongitude) {
 		// return mock location
+		// 30.007438933997708, 31.3109925489764
 		return {
-			latitude: 37.78825,
-			longitude: -122.4324,
+			latitude: 30.0074,
+			longitude: 31.311,
 			latitudeDelta: 0.01,
 			longitudeDelta: 0.01,
 		};
